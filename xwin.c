@@ -2079,6 +2079,12 @@ ui_create_window(void)
 	}
 
 	XSelectInput(g_display, g_wnd, input_mask);
+
+	if (g_embed_wnd)
+	{
+		/* kmwang: also interested of events in embed window */
+		XSelectInput(g_display, (Window)g_embed_wnd, input_mask);
+	}
 	XMapWindow(g_display, g_wnd);
 
 	/* wait for VisibilityNotify */
@@ -2456,6 +2462,10 @@ xwin_process_events(void)
 				if (g_focused)
 					XGrabKeyboard(g_display, g_wnd, True,
 						      GrabModeAsync, GrabModeAsync, CurrentTime);
+				/* kmwang: also interested of events in embed window */
+				if (g_embed_wnd)
+					XGrabKeyboard(g_display, (Window)g_embed_wnd, True,
+								  GrabModeAsync, GrabModeAsync, CurrentTime);
 				break;
 
 			case LeaveNotify:
